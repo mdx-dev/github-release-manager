@@ -85,7 +85,9 @@ class GithubReleaseDownloader {
 
   unzipRelease() {
     console.log('Extracting release...');
+    console.log('file type', shell.exec('file release.tar.gz'));
     shell.exec('tar -zvxf release.tar.gz');
+    console.log('checking release folder', shell.exec('ls release'));
   }
 
 }
