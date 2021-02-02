@@ -74,7 +74,7 @@ class GithubReleaseDownloader {
   download(assetId) {
     console.log('Downloading release...');
     shell.exec(
-      `curl -sL --header "Authorization: token ${GH_TOKEN}" --header 'Accept: application/octet-stream' -H 'Accept-Encoding: gzip' https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${assetId} > release.tar.gz`
+      `curl -0L --header "Authorization: token ${GH_TOKEN}" --header 'Accept: application/octet-stream' -H 'Accept-Encoding: gzip' https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${assetId} > release.tar.gz`
     );
   }
 
