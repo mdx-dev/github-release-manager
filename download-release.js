@@ -73,8 +73,12 @@ class GithubReleaseDownloader {
 
   download(assetId) {
     console.log('Downloading release...');
+
     shell.exec(
-      `curl -0L --header "Authorization: token ${GH_TOKEN}" --header 'Accept: application/octet-stream' -H 'Accept-Encoding: gzip' https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${assetId} > release.tar.gz`
+      `curl -0L --header "Authorization: token ${GH_TOKEN}" -H "Accept: application/vnd.github.v3+json" -H 'Accept-Encoding: gzip' https://api.github.com/repos/mdx-dev/platform-ui-2/releases/assets/${assetId} > release.tar.gz`
+      // `wget --header 'Authorization: token ${GH_TOKEN}' https://api.github.com/repos/mdx-dev/platform-ui-2/releases/assets/31553041`
+      // `wget -q --auth-no-challenge --header='Accept:application/octet-stream' https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${assetId}?access_token=${GH_TOKEN} -O release.tar.gz`
+
     );
   }
 
@@ -86,6 +90,7 @@ class GithubReleaseDownloader {
   unzipRelease() {
     console.log('Extracting release...');
     console.log('file type', shell.exec('file release.tar.gz'));
+    console.log('file type', shell.exec('cat release.tar.gz'));
     shell.exec('tar -zvxf release.tar.gz');
     console.log('checking release folder', shell.exec('ls release'));
   }
