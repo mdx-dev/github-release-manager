@@ -75,7 +75,7 @@ class GithubReleaseDownloader {
     console.log('Downloading release...');
 
     shell.exec(
-      `curl -L -H "Authorization: token ${GH_TOKEN}" -H "Accept:application/octet-stream" https://api.github.com/repos/mdx-dev/platform-ui-2/releases/assets/${assetId} > release.tar.gz`
+      `curl -L -H "Accept:application/octet-stream" https://api.github.com/repos/mdx-dev/platform-ui-2/releases/assets/${assetId}?access_token=${GH_TOKEN} > release.tar.gz`
       // `wget --header 'Authorization: token ${GH_TOKEN}' https://api.github.com/repos/mdx-dev/platform-ui-2/releases/assets/31553041`
       // `wget -q --auth-no-challenge --header='Accept:application/octet-stream' https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${assetId}?access_token=${GH_TOKEN} -O release.tar.gz`
     );
