@@ -73,10 +73,13 @@ class GithubReleaseDownloader {
 
   download(assetId) {
     console.log('Downloading release...');
-    http.makeGetRequest(
-      'https://api.github.com/repos/' + OWNER + '/' + REPO + '/releases/assets/' + assetId,
-      {headers: {'User-Agent': 'request', 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/octet-stream'}}
-    ).then(res => console.log(res));
+    // http.makeGetRequest(
+    //   'https://api.github.com/repos/' + OWNER + '/' + REPO + '/releases/assets/' + assetId,
+    //   {headers: {'User-Agent': 'request', 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/octet-stream'}}
+    // ).then(res => console.log(res));
+    shell.exec(
+      `curl -s -H "Authorization: token ${GH_TOKEN}" -H "Accept:application/octet-stream" https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${assetId} -w "%{redirect_url}" | xargs curl -so release.tar.gz`
+    )
 
 
     // shell.exec(
