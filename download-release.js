@@ -73,12 +73,18 @@ class GithubReleaseDownloader {
 
   download(assetId) {
     console.log('Downloading release...');
+    http.makeGetRequest(
+      'https://api.github.com/repos/' + OWNER + '/' + REPO + '/releases/assets/' + assetId,
+      {headers: {'User-Agent': 'request', 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/octet-stream'}}
+    ).then(res => console.log(res));
 
-    shell.exec(
-      // `curl -L -H "Accept:application/octet-stream" https://api.github.com/repos/mdx-dev/platform-ui-2/releases/assets/${assetId}?access_token=${GH_TOKEN} > release.tar.gz`
-      // `wget --header 'Authorization: token ${GH_TOKEN}' https://api.github.com/repos/mdx-dev/platform-ui-2/releases/assets/31553041`
-      `wget -q --auth-no-challenge --header "Authorization: token ${GH_TOKEN}" --header='Accept:application/octet-stream' https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${assetId} -O release.tar.gz`
-    );
+
+    // shell.exec(
+    //   // `curl -L -H "Accept:application/octet-stream" https://api.github.com/repos/mdx-dev/platform-ui-2/releases/assets/${assetId}?access_token=${GH_TOKEN} > release.tar.gz`
+    //   // `wget --header 'Authorization: token ${GH_TOKEN}' https://api.github.com/repos/mdx-dev/platform-ui-2/releases/assets/31553041`
+    //   `wget -q --auth-no-challenge --header "Authorization: token ${GH_TOKEN}" --output-document=release.tar.gz --header='Accept:application/octet-stream' https://api.github.com/repos/${OWNER}/${REPO}/releases/assets/${assetId}`
+
+    // );
   }
 
   makeReleaseDir() {
