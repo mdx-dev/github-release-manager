@@ -3,6 +3,10 @@
   "version": "1.1.2",
   "description": "Creates and downloads github releases",
   "main": "create-release.js",
+  "volta": {
+    "node": "14.18.1",
+    "npm": "6.14.15"
+  },
   "scripts": {
     "test": "node create-release.js <branch> <github_token> <owner> <repo>"
   },
@@ -13,10 +17,8 @@
   ],
   "author": "Nate McDowell",
   "license": "ISC",
-  "devDependencies": {
-    "lodash": "latest"
-  },
   "dependencies": {
+    "lodash": "^4.17.21",
     "request": "^2.83.0"
   }
 }
