@@ -1,5 +1,4 @@
 const BRANCH_OR_TAG = process.argv[2];
-const RELEASE_BRANCH_OR_TAG = `release-${BRANCH_OR_TAG}`;
 const GH_TOKEN = process.argv[3];
 const OWNER = process.argv[4];
 const REPO = process.argv[5];
@@ -19,7 +18,7 @@ class GithubReleaseDownloader {
   downloadRelease() {
     console.log(`GitHub Release Downloader...`);
     console.log(`Repo: "${REPO}"`);
-    console.log(`Branch/Tag: "${RELEASE_BRANCH_OR_TAG}"`);
+    console.log(`Branch/Tag: "${BRANCH_OR_TAG}"`);
 
     this.deleteReleaseDir();
     this.deleteTarFile();
@@ -28,13 +27,13 @@ class GithubReleaseDownloader {
 
   getReleaseData() {
     return JSON.stringify({
-      tag_name: `${RELEASE_BRANCH_OR_TAG}-${date}`,
+      tag_name: `release-${BRANCH_OR_TAG}-${date}`,
       target_commitish: BRANCH_OR_TAG
     });
   }
 
   getReleases(page = 1) {
-    console.log(`Searching for "${RELEASE_BRANCH_OR_TAG}" on page "${page}"...`);
+    console.log(`Searching for "${BRANCH_OR_TAG}" on page "${page}"...`);
 
     if (!BRANCH_OR_TAG || !GH_TOKEN || !OWNER || !REPO) {
       console.log(`Error: Missing argument. Required: <branch> <github_token> <owner> <repo>`);
@@ -59,7 +58,7 @@ class GithubReleaseDownloader {
       }
 
       let releasesFound;
-      let releaseRegex = new RegExp(`^release-${RELEASE_BRANCH_OR_TAG.replace('.', '\\.')}-\\d+$`);
+      let releaseRegex = new RegExp(`^release-${BRANCH_OR_TAG.replace('.', '\\.')}-\\d+$`);
       if (resBody.length > 0) {
         releasesFound = resBody.filter(release => releaseRegex.test(release.name));
         if (!releasesFound || !releasesFound.length) {
@@ -69,7 +68,7 @@ class GithubReleaseDownloader {
       }
 
       if (!releasesFound) {
-        console.log(`Error: No releases found for "${RELEASE_BRANCH_OR_TAG}"`);
+        console.log(`Error: No releases found for "${BRANCH_OR_TAG}"`);
         process.exit(1);
       }
 
@@ -83,7 +82,7 @@ class GithubReleaseDownloader {
         .then(() => this.makeReleaseDir())
         .then(() => this.unzipRelease())
         .then(() => {
-          console.log(`Success: GitHub release "${RELEASE_BRANCH_OR_TAG}" downloaded!`);
+          console.log(`Success: GitHub release "${lastRelease.name}" downloaded!`);
           process.exit(0);
         });
     })
