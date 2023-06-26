@@ -60,7 +60,7 @@ class GithubReleaseDownloader {
 
       let releasesFound;
       if (resBody.length > 0) {
-        releasesFound = resBody.filter(release => release.tag_name.indexOf(RELEASE_BRANCH_OR_TAG) > -1);
+        releasesFound = resBody.filter(release => release.tag_name === RELEASE_BRANCH_OR_TAG);
         if (!releasesFound || !releasesFound.length) {
           // Look for release on the next page
           return this.getReleases(page + 1);
