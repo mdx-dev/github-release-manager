@@ -59,8 +59,9 @@ class GithubReleaseDownloader {
       }
 
       let releasesFound;
+      let releaseRegex = new RegExp(`^release-${RELEASE_BRANCH_OR_TAG.replace('.', '\\.')}-\\d+$`);
       if (resBody.length > 0) {
-        releasesFound = resBody.filter(release => release.tag_name === RELEASE_BRANCH_OR_TAG);
+        releasesFound = resBody.filter(release => releaseRegex.test(release.name));
         if (!releasesFound || !releasesFound.length) {
           // Look for release on the next page
           return this.getReleases(page + 1);
