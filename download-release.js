@@ -60,7 +60,16 @@ class GithubReleaseDownloader {
       let releasesFound;
       let releaseRegex = new RegExp(`^release-${BRANCH_OR_TAG.replace('.', '\\.')}-\\d+$`);
       if (resBody.length > 0) {
-        releasesFound = resBody.filter(release => releaseRegex.test(release.name));
+        releasesFound = resBody
+          .filter(release => releaseRegex.test(release.name))
+          .map((release) => {
+            const nameParts = release.name.split('-');
+            return {
+              ...release,
+              // Include the original timestamp from the release name
+              original_timestamp: nameParts[nameParts.length - 1],
+            };
+          });
         if (!releasesFound || !releasesFound.length) {
           // Look for release on the next page
           return this.getReleases(page + 1);
@@ -72,11 +81,13 @@ class GithubReleaseDownloader {
         process.exit(1);
       }
 
-      const releasesSorted = _.sortBy(releasesFound, release => release.created_at);
-      const lastRelease = releasesSorted[ releasesSorted.length -1 ];
+      const releasesSorted = _.sortBy(releasesFound, release => release.original_timestamp);
+      const lastRelease = releasesSorted[ releasesSorted.length - 1 ];
 
       console.log('Using asset id: ' + lastRelease.assets[0].id);
+      console.log('Original Timestamp: ' + lastRelease.original_timestamp);
       console.log('Release created at: ' + lastRelease.created_at);
+      console.log('Release published at: ' + lastRelease.published_at);
 
       return this.download(lastRelease.assets[0].id)
         .then(() => this.makeReleaseDir())
@@ -113,14 +124,14 @@ class GithubReleaseDownloader {
   deleteReleaseDir() {
     try {
       fs.rmdirSync(RELEASE_DIR, { recursive: true });
-      console.log(`"${RELEASE_DIR}" has been deleted!`);
+      console.log(`Clean up: "${RELEASE_DIR}" directory has been deleted!`);
     } catch (err) { }
   }
 
   deleteTarFile() {
     try {
       fs.unlinkSync(TAR_FILE);
-      console.log(`"${TAR_FILE}" has been deleted!`);
+      console.log(`Clean up: "${TAR_FILE}" file has been deleted!`);
     } catch (err) { }
   }
 
